@@ -16,4 +16,18 @@ export class AuthService extends CommonService {
             throw e;
         }
     }
+
+    static async logout(sessionToken: string): Promise<void> {
+        try {
+            await AuthService.post<void>(
+                `${AuthService.baseUrl}/logout`, 
+                { session_token: sessionToken}
+            );
+        } catch (e: unknown) {
+            if (axios.isAxiosError(e)) {
+                throw e.response;
+            }
+            throw e;
+        }
+    }
 }
