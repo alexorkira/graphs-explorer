@@ -1,0 +1,18 @@
+@import "../../styles/colors";
+
+.login-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    header {
+        color: $color-text-white;
+        font-size: 21px;
+        font-weight: bold;
+        margin: 20px 0;
+    }
+
+    .login-form {
+        min-width: 400px;
+    }
+}

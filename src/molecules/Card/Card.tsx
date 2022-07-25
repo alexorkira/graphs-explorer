@@ -4,11 +4,12 @@ interface CardProps {
     title: string;
     children: React.ReactNode | Array<React.ReactNode>,
     actions?: React.ReactNode | Array<React.ReactNode>
+    styleClass?: string;
 };
 
 const Card: React.FC<CardProps> = (props: CardProps) => {
   return (
-    <div className="chi-card -align--center">
+    <div className={`chi-card -align--center ${props.styleClass ?? ''}`}>
         <div className="chi-card__content">
             <div className="chi-card__title">{props.title}</div>
             <div className="chi-card__caption">
