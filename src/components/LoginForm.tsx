@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "../atoms/Button/Button";
 import TextInput from "../atoms/TextInput/TextInput";
 import Card from "../molecules/Card/Card";
-import { AuthService } from "../services/auth.services";
+import ContextStore from "../store";
 import "./LoginForm.scss";
 
 const LoginForm: React.FC = () => {
@@ -10,12 +10,13 @@ const LoginForm: React.FC = () => {
     const [ usernameError, setUsernameError ] = useState<string>('');
     const [ password, setPassword ] = useState<string>('');
     const [ passwordError, setPasswordError ] = useState<string>('');
+    const dispatchLogin = ContextStore.useStoreActions((actions) => actions.login);
     
     const login = async () => {
         setUsernameError(username === '' ? "Please insert the username" : '');
         setPasswordError(password === '' ? "Please insert the password" : '');
         if (username && password) {
-            await AuthService.login({identifiant: username, password});
+            await dispatchLogin({ identifiant: username, password });
         }
     }
 
