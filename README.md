@@ -4,10 +4,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Environment Configuration
 
-In order to work with the [mock backend ](http://localhost:3000) in local, you should configure the environment variable to avoid a ports collision (values are examples)
+In order to work in local with the [mock backend ](http://localhost:3000), you should configure the environment variable to avoid a ports collision (values are examples)
 
 ```bash
-PORT = 3010
+PORT=3010
+REACT_APP_BACKEND_HOST=http://localhost:3000
 ```
 
 ## Available Scripts
