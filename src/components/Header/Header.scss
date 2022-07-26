@@ -1,0 +1,11 @@
+.header {
+    .chi-header__content {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .chi-dropdown__menu {
+        cursor: pointer;
+        top: 30px;
+    }
+}
