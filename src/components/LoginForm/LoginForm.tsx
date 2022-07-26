@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Button from "../atoms/Button/Button";
-import TextInput from "../atoms/TextInput/TextInput";
-import Card from "../molecules/Card/Card";
-import ContextStore from "../store";
+import Button from "../../atoms/Button/Button";
+import TextInput from "../../atoms/TextInput/TextInput";
+import Card from "../../molecules/Card/Card";
+import ContextStore from "../../store";
 import "./LoginForm.scss";
 
 const LoginForm: React.FC = () => {

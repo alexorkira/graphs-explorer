@@ -1,16 +1,16 @@
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import './App.scss';
+import DashboadPage from './pages/Dashboard/DashboardPage';
 import LoginPage from './pages/Login/LoginPage';
 import ContextStore from './store';
 
 const App = () => {
     const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
-    const logout = ContextStore.useStoreActions((actions) => actions.logout);
-
+  
     return (
         <div className="App">
           {sessionToken 
-              ? <div>TBD: Show the graphs<button onClick={() => logout(sessionToken!)}>LOGOUT</button></div>
+              ? <DashboadPage />
               : <LoginPage />
           }
           <Router basename='/'>

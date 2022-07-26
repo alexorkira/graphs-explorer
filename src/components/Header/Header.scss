@@ -1,0 +1,29 @@
+
+@import "../../styles/colors.scss";
+
+.header {
+    .chi-header__content {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .chi-dropdown__menu {
+        cursor: pointer;
+        top: 40px;
+
+        .chi-dropdown__menu-item {
+            &.disabled {
+                background-color: $color-background-muted-light;
+                cursor: not-allowed;
+            }
+
+            &:hover:not(.disabled) {
+                background-color: $color-background-primary-light;
+            }
+        }
+    }
+
+    .chi-button:focus {
+        outline: none !important;
+    }
+}
