@@ -19,10 +19,12 @@ const Header: React.FC = () => {
                                 data-position="bottom-end"
                                 onClick={() => setShowMenu(!showMenu)}
                             >
-                                Menu
+                                <div className="chi-avatar">
+                                    <i className="chi-icon icon-user"></i>
+                                </div>
                             </button>
                             <div className={`chi-dropdown__menu -w--sm ${showMenu ? '-active' : ''}`} >
-                                <div className="chi-dropdown__menu-item">
+                                <div className="chi-dropdown__menu-item disabled">
                                     <i className="chi-icon icon-user"></i>
                                     <span>Profile</span>
                                 </div>

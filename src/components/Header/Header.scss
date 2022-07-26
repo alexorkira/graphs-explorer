@@ -1,3 +1,6 @@
+
+@import "../../styles/colors.scss";
+
 .header {
     .chi-header__content {
         display: flex;
@@ -6,6 +9,21 @@
 
     .chi-dropdown__menu {
         cursor: pointer;
-        top: 30px;
+        top: 40px;
+
+        .chi-dropdown__menu-item {
+            &.disabled {
+                background-color: $color-background-muted-light;
+                cursor: not-allowed;
+            }
+
+            &:hover:not(.disabled) {
+                background-color: $color-background-primary-light;
+            }
+        }
+    }
+
+    .chi-button:focus {
+        outline: none !important;
     }
 }
