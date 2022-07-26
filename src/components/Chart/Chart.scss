@@ -1,0 +1,20 @@
+@import "../../styles/colors";
+
+.chart {
+    margin: 25px;
+    background-color: $color-background-white;
+    
+    .chart-title {
+        padding: 15px 0 0 20px;
+        text-align: left;
+    }
+
+    .apexcharts-legend {
+        justify-content: right !important;
+        margin-right: 200px;
+    }
+
+    .apexcharts-yaxis-annotations > line {
+        stroke-width: 2
+    }
+}
