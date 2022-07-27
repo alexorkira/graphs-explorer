@@ -7,10 +7,12 @@ import { createTooltipEntry } from "./createTooltipEntry";
 
 
 const TIMESTAMP_FORMAT = 'dddd DD-MM-YYYY HH:mm (Z)';
+const X_AXIS_DATETIME_FORMAT = 'MMM DD';
 
 interface ChartProps {
     title?: string;
     data: Array<ChartData>;
+    timestamps: Array<number>,
     noFilling?: boolean;
 };
 
@@ -18,6 +20,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
     const series: ApexAxisChartSeries = [];
     const strokes: Array<YAxisAnnotations> = []; 
     const colors: Array<string> = [];
+    const { timestamps } = props;
 
     props.data.forEach(d => {
         series.push({ name: d.label, data: d.values });
@@ -31,12 +34,9 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         }
     });
 
-    const fill = {};
+    const fill = { type: 'solid' };
     if (props.noFilling) {
-        Object.assign(fill, { type: 'solid', colors: ['transparent'] });
-    }
-    else {
-        Object.assign(fill, { type: 'solid', opacity: 0.6 });
+        Object.assign(fill, {  colors: ['transparent'] });
     }
 
     const options = {
@@ -55,7 +55,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         tooltip: {
             custom: (options: any) => {
                 const { series, dataPointIndex } = options;
-                const timestamp = moment().utc().format(TIMESTAMP_FORMAT);
+                const timestamp = moment(timestamps[dataPointIndex]).local().format(TIMESTAMP_FORMAT);
                 let content = "";
                 
                 props.data.forEach((d, i) => {
@@ -79,6 +79,11 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         },
         xaxis: {
             tickAmount: 2,
+            labels: {
+                formatter: ({ value } : any) => {
+                    return moment(value).local().format(X_AXIS_DATETIME_FORMAT);
+                }
+            } 
         },
         legend: {
             show: true,
