@@ -80,8 +80,8 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         xaxis: {
             tickAmount: 2,
             labels: {
-                formatter: ({ value } : any) => {
-                    return moment(value).local().format(X_AXIS_DATETIME_FORMAT);
+                formatter: (dt: any) => {
+                    return moment(dt).local().format(X_AXIS_DATETIME_FORMAT);
                 }
             } 
         },
