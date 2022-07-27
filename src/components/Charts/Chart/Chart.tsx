@@ -1,10 +1,9 @@
 import moment from "moment";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
-import { ChartData } from "../../models/ChartData";
+import { ChartData } from "../../../interfaces/ChartData";
 import "./Chart.scss";
 import { createTooltipEntry } from "./createTooltipEntry";
-
 
 const TIMESTAMP_FORMAT = 'dddd DD-MM-YYYY HH:mm (Z)';
 const X_AXIS_DATETIME_FORMAT = 'MMM DD';
@@ -42,12 +41,17 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
     const options = {
         colors: colors,
         chart: {
+            type: "area" as "area",
             toolbar: {
                 show: false,
             },
+            zoom: {
+                enabled: false
+            }
         },
         stroke: {
             width: 2,
+            curve: 'straight' as "straight",
         },
         dataLabels: {
             enabled: false,
@@ -106,7 +110,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
                     type="area" 
                     series={series} 
                     options={options} 
-                    height={330}
+                    height={250}
                 />
             </div>
         </div>

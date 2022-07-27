@@ -12,4 +12,20 @@ export class CommonService {
             throw e;
         }
     }
+
+    static async getData<T>(
+        api: string, 
+        from: number,
+        to: number, 
+        sessionToken: string
+    ): Promise<T> {
+        return CommonService.post<T>(
+            api, 
+            { 
+                session_token: sessionToken,
+                from,
+                to
+            }
+        );
+    }
 }

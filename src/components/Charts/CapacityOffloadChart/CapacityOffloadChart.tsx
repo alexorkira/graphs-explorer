@@ -1,10 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 import React, { useEffect, useState } from "react";
-import { Bandwidth } from "../../models/Bandwidth";
-import { ChartData } from "../../models/ChartData";
-import { BandwidthService } from "../../services/bandwidth.services";
-import ContextStore from "../../store";
-import { bpsToGbps } from "../../utils/bpsToGbps";
+import { ChartData } from "../../../interfaces/ChartData";
+import { Bandwidth } from "../../../models/Bandwidth";
+
+import { BandwidthService } from "../../../services/bandwidth.services";
+import ContextStore from "../../../store";
+import { bpsToGbps } from "../../../utils/bpsToGbps";
 import Chart from "../Chart/Chart";
 
 const CapacityOffloadChart: React.FC = () => {
@@ -16,7 +17,7 @@ const CapacityOffloadChart: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await BandwidthService.getAll(sessionToken)
+            BandwidthService.getAll(sessionToken)
                 .then((bandiwidth: Bandwidth) => {
                     // The first element is timestamp, 
                     // second one the value of the bandwidth selected (cdn or p2p)
