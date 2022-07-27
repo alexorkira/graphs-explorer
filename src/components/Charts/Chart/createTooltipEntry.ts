@@ -1,4 +1,4 @@
-import { StrokeData } from "../../models/ChartData"
+import { StrokeData } from "../../../interfaces/ChartData"
 
 export const createTooltipEntry = (
     label: string, 
