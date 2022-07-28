@@ -72,7 +72,7 @@ const CapacityOffloadChart: React.FC = () => {
     return (
         <>
             {data.length > 0 && 
-                <Chart title={"Capacity offload"} data={data} timestamps={timestamps} />
+                <Chart id={"capacity-offload-chart"} title={"Capacity offload"} data={data} timestamps={timestamps} />
             }
         </>
         

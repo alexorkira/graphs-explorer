@@ -1,7 +1,6 @@
 import React from "react";
 import {
-    CapacityOffloadChart,
-    ConcurrentViewerChart
+    CapacityOffloadChart
 } from "../../components/Charts";
 import Header from "../../components/Header/Header";
 
@@ -10,7 +9,8 @@ const DashboadPage: React.FC = () => {
         <div className="dashboard-page">
             <Header />
             <CapacityOffloadChart />
-            <ConcurrentViewerChart />
+            {/* <ConcurrentViewerChart />
+            <BrushChart /> */}
         </div>
     );
 };

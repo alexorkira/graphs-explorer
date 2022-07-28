@@ -40,10 +40,20 @@ const ConcurrentViewerChart: React.FC = () => {
         fetchData();  
     }, [invalidateSession, sessionToken]);
 
+    const customOption = {
+        brush: true
+    }
+
     return (
         <>
             {data.length > 0 && 
-                <Chart title={"Concurrent Viewer"} data={data} timestamps={timestamps} noFilling />
+                <Chart 
+                    id={"concurrent-viewer-chart"}
+                    title={"Concurrent Viewer"} 
+                    data={data} 
+                    timestamps={timestamps} 
+                    noFilling 
+                    options={customOption} />
             }
         </>
         

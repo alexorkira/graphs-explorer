@@ -1,0 +1,14 @@
+@import "../../../styles/colors";
+
+.brush-chart {
+    background-color: $color-background-white;
+    
+    .chart-container {
+        margin: 0 20px;
+
+        div {
+            min-height: 0!important;
+            margin: 0;
+        }
+    }
+}

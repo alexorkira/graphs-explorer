@@ -1,12 +1,8 @@
 @import "../../../styles/colors";
 
 .chart {
-    margin: 25px;
+    margin: 20px 25px;
     background-color: $color-background-white;
-    
-    .chart-container {
-        margin: 20px;
-    }
 
     .chart-title {
         padding: 15px 0 0 20px;
