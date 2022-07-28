@@ -4,7 +4,6 @@ import { ChartData } from "../../../interfaces/ChartData";
 import { Audience } from "../../../models/Audience";
 import { AudienceService } from "../../../services/audience.service";
 import ContextStore from "../../../store";
-import Chart from "../Chart/Chart";
 
 const ConcurrentViewerChart: React.FC = () => {
     const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
@@ -23,8 +22,8 @@ const ConcurrentViewerChart: React.FC = () => {
                     setTimestamps(audience.map(c => c[0]));
                     setData([
                        {
-                            label: "Audiance",
-                            values: audience,
+                            name: "Audiance",
+                            series: audience,
                             color: "#FF7D71",
                         }
                         , 
@@ -46,14 +45,14 @@ const ConcurrentViewerChart: React.FC = () => {
 
     return (
         <>
-            {data.length > 0 && 
-                <Chart 
-                    id={"concurrent-viewer-chart"}
-                    title={"Concurrent Viewer"} 
-                    data={data} 
-                    timestamps={timestamps} 
-                    noFilling 
-                    options={customOption} />
+            {data.length > 0 && <></>
+                // <Charts
+                //     id={"concurrent-viewer-chart"}
+                //     title={"Concurrent Viewer"} 
+                //     data={data} 
+                //     timestamps={timestamps} 
+                //     noFilling 
+                //     options={customOption} />
             }
         </>
         

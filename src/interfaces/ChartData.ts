@@ -5,8 +5,8 @@ export interface StrokeData {
 }
 
 export interface ChartData {
-    label: string,
-    values: Array<[number, number]>,
+    name: string,
+    series: Array<[number, number]>,
     unit?: string;
     color: string;
     stroke?: StrokeData;

@@ -47,8 +47,8 @@ const BrushChart: React.FC = () => {
                     setTimestamps(audience.map(c => c[0]));
                     setData([
                        {
-                            label: "Audiance",
-                            values: audience,
+                            name: "Audiance",
+                            series: audience,
                             color: "#116530",
                         }
                         , 
@@ -79,7 +79,7 @@ const BrushChart: React.FC = () => {
             group: "test",
             stacked: false,
           brush:{
-            targets: ["concurrent-viewer-char", "capacity-offload-chart"],
+            targets: ["concurrent-viewer-chart", "capacity-offload-chart"],
             enabled: true
           },
         //   selection: {
