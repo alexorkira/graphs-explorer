@@ -1,12 +1,11 @@
 import moment from "moment";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
+import { TIMESTAMP_FORMAT, X_AXIS_DATETIME_FORMAT } from "../../../constants/datetimeFormats";
 import { ChartData } from "../../../interfaces/ChartData";
+import { createTooltipEntry } from "../../../utils/createTooltipEntry";
 import "./Chart.scss";
-import { createTooltipEntry } from "./createTooltipEntry";
 
-const TIMESTAMP_FORMAT = 'dddd DD-MM-YYYY HH:mm (Z)';
-const X_AXIS_DATETIME_FORMAT = 'MMM DD';
 
 interface ChartProps {
     id: string;
@@ -107,18 +106,8 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         },
         fill: fill,
         grid: {
-            show: false,      // you can either change hear to disable all grids
-            // xaxis: {
-            //   lines: {
-            //     show: true  //or just here to disable only x axis grids
-            //    }
-            //  },  
-            // yaxis: {
-            //   lines: { 
-            //     show: true  //or just here to disable only y axis
-            //    }
-            //  },   
-          }
+            show: false,
+        }
     };
 
     if (props.noFilling) {
@@ -129,7 +118,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         <div className="chart">
             <div className="chart-title">{props.title}</div>
             <div className="chart-container">
-                <ReactApexChart type="area" series={series} options={options} height={250} />
+                <ReactApexChart type="area" series={series} options={options} height={280} />
             </div>
         </div>
     );

@@ -1,37 +1,36 @@
 import { StatusCodes } from "http-status-codes";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import { ChartData } from "../../../interfaces/ChartData";
+import { BRUSH_CHART_FIXED_OPTIONS } from "../../../constants/brushFixedOptions";
+import { TIMESTAMP_FORMAT } from "../../../constants/datetimeFormats";
 import { BrushChartProps } from "../../../interfaces/ChartProps";
 import { Audience } from "../../../models/Audience";
 import { AudienceService } from "../../../services/audience.service";
 import ContextStore from "../../../store";
+import { createTooltipEntry } from "../../../utils/createTooltipEntry";
+import "./BrushChart.scss";
 
 const BrushChart: React.FC<BrushChartProps> = (
     { ids }: BrushChartProps
 ) => {
     const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
     const invalidateSession = ContextStore.useStoreActions((actions) => actions.setSessionToken);
-    const [ data, setData ] = useState<ChartData>();
-    //const [ timestamps, setTimestamps ] = useState<Array<number>>([]);
-  
+    const [ data, setData ] = useState<Array<[number,number]>>([]);
+    const [ timestamps, setTimestamps ] = useState<Array<number>>([]);
+    
+    let fromValue = 0;
+    let toValue = 0;
+
     useEffect(() => {
+        //FIXME: It's possibile to avoid this call taken the state from the store
         const fetchData = async () => {
             AudienceService.getAll(sessionToken)
                 .then(({ audience }: Audience) => {
-
                     // Extract the array of timestamp (it is the same if taken from p2p array)
                     // in order to display it into the tooltip header
-                    //setTimestamps(audience.map(c => c[0]));
-                    setData(
-                       {
-                            label: "",
-                            values: audience,
-                            color: "",
-                        }
-                        
-                    );
-
+                    setTimestamps(audience.map(c => c[0]));
+                    setData(audience);
                 })
                 .catch(e => {
                     if (e.status === StatusCodes.FORBIDDEN) {
@@ -43,7 +42,7 @@ const BrushChart: React.FC<BrushChartProps> = (
         fetchData();  
     }, [invalidateSession, sessionToken]);
 
-    const brushOpptions = {
+    const brushOptions = {
         colors: [ "#2E8B57" ],
         chart: {
             zoom: {
@@ -53,34 +52,28 @@ const BrushChart: React.FC<BrushChartProps> = (
                 targets: ids,
                 enabled: true
             },
-        },
-        stroke: {
-            width: 0,
-            curve: 'straight' as "straight",
+            selection: {
+                enabled: true
+            },
+            events: {
+                brushScrolled: (_ctx: any, selection: { xaxis: { min: number, max: number }}) => {
+                    const { xaxis } = selection;
+                    fromValue = xaxis.min;
+                    toValue = xaxis.max;
+                },
+            }
         },
         tooltip: {
             enabled: true,
-            custom: (options: any) => {
-                console.log(options);
-                console.log(options.w.globals.timescaleLabels);
-                const { series, dataPointIndex } = options;
-                let content = ""
-                // FIXME: Add tooltip with the timestamp info
-                // let content = createTooltipEntry(
-                //         "From",
-                //         series[0][dataPointIndex], 
-                //         "green",
-                //         0
-                //     )
-                // + createTooltipEntry(
-                //     "To",
-                //     series[1][dataPointIndex], 
-                //     "blue",
-                //     1,
-                // );
+            custom: (opts: { dataPointIndex: number; }) => {
+                // For the first selection, "From" value will be the point where the mouse is over in the graph
+                const from = fromValue ??  timestamps[opts.dataPointIndex];
+                let content = createTooltipEntry("From", moment(from).local().format(TIMESTAMP_FORMAT), "green", 0);
+                if (toValue) {
+                    const to = moment(toValue).local().format(TIMESTAMP_FORMAT);
+                    content += createTooltipEntry("To", to, "blue", 1);
+                }
 
-                console.log("forse ", series[dataPointIndex]);
-            
                 return (
                     `<div class="apexcharts-tooltip-title" style="font-weight: bold; font-size: 14px;">
                        Brush the areas you want to zoom on it
@@ -89,54 +82,19 @@ const BrushChart: React.FC<BrushChartProps> = (
                 );
             }
         },
-        legend: {
-            show: false,
-        },
-        xaxis: {
-            type: 'datetime' as 'datetime',
-            labels: {
-                show: false
-            },
-            show: false,
-            axisBorder: {
-                show: false
-            },
-            axisTicks: {
-                show: false
-            },
-        },
-        yaxis: {
-            tickAmount: 1,
-            show: false,
-            labels: {
-                show: false
-            },
-            axisBorder: {
-                show: false
-            },
-            axisTicks: {
-                show: false
-            },
-            max: (max: number) => max
-        },
-        fill: {
-            type: 'solid'
-        },
-        grid: {
-            show: false,
-          }
+        ...BRUSH_CHART_FIXED_OPTIONS,
     };
 
     return (
         <>
-            {data && 
-                <div className="chart">
+            {data.length > 0 && 
+                <div className="chart brush">
                     <div className="chart-container">
                         <ReactApexChart 
-                            options={brushOpptions}
-                            series={[{ data: data.values }]} 
+                            options={brushOptions}
+                            series={[{ data: data }]} 
                             type="area" 
-                            height={100} 
+                            height={120} 
                         />
                     </div>
                 </div>

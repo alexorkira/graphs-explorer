@@ -32,7 +32,7 @@ const ContextStore = createContextStore<ContextStoreModel>(
                 })
         ),
         logout: thunk(async (actions, token) => {
-            await AuthService.logout(token);
+            AuthService.logout(token);
             actions.setSessionToken(undefined);
         })
     }
