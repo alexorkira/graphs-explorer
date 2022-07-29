@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import React, { useEffect, useState } from "react";
 import { ChartData } from "../../../interfaces/ChartData";
+import { ChartProps } from "../../../interfaces/ChartProps";
 import { Bandwidth } from "../../../models/Bandwidth";
 
 import { BandwidthService } from "../../../services/bandwidth.services";
@@ -8,12 +9,13 @@ import ContextStore from "../../../store";
 import { bpsToGbps } from "../../../utils/bpsToGbps";
 import Chart from "../Chart/Chart";
 
-const CapacityOffloadChart: React.FC = () => {
+const CapacityOffloadChart: React.FC<ChartProps> = (
+    { id } : ChartProps
+) => {
     const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
     const invalidateSession = ContextStore.useStoreActions((actions) => actions.setSessionToken);
     const [ data, setData ] = useState<Array<ChartData>>([]);
     const [ timestamps, setTimestamps ] = useState<Array<number>>([]);
-   
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,18 +23,21 @@ const CapacityOffloadChart: React.FC = () => {
                 .then((bandiwidth: Bandwidth) => {
                     // The first element is timestamp, 
                     // second one the value of the bandwidth selected (cdn or p2p)
-                    const {cdn, p2p} = bandiwidth;
+                    const { cdn, p2p } = bandiwidth;
                     
                     // Extract the array of timestamp (it is the same if taken from p2p array)
                     // in order to display it into the tooltip header
                     setTimestamps(cdn.map(c => c[0]));
+                   
+                    const gbpsP2p: Array<[number,number]> = 
+                        p2p.map(([timestamp, value]) => [timestamp, bpsToGbps(value)]
+                    );
+                    const p2pMax = Math.max(...gbpsP2p.map(p => p[1]));
+                    const gbpsHttp: Array<[number,number]> = 
+                        cdn.map(([timestamp, value]) => [timestamp, bpsToGbps(value)]
+                    );
+                    const httpMax = Math.max(...gbpsHttp.map(h => h[1]));
 
-                    const gbpsP2p: Array<[number,number]> = p2p.map(([timestamp, value]) => 
-                        [timestamp, bpsToGbps(value)]
-                    );
-                    const gbpsHttp: Array<[number,number]> = cdn.map(([timestamp, value]) => 
-                        [timestamp, bpsToGbps(value)]
-                    );
                     setData([
                        {
                             label: "P2p",
@@ -42,7 +47,7 @@ const CapacityOffloadChart: React.FC = () => {
                             stroke: {
                                 label: "MAX P2p",
                                 color: "#FF7D71",
-                                value : Math.max(...gbpsP2p.map(p => p[1]))
+                                value: p2pMax
                             }
                         }, 
                         {
@@ -53,7 +58,7 @@ const CapacityOffloadChart: React.FC = () => {
                             stroke: {
                                 label: "MAX Http",
                                 color: "#0075C9",
-                                value: Math.max(...gbpsHttp.map(c => c[1]))
+                                value: httpMax
                             }
                         }
                         , 
@@ -72,10 +77,15 @@ const CapacityOffloadChart: React.FC = () => {
     return (
         <>
             {data.length > 0 && 
-                <Chart title={"Capacity offload"} data={data} timestamps={timestamps} />
+                <Chart 
+                    id={id}
+                    title={"Capacity offload"} 
+                    data={data} 
+                    timestamps={timestamps}
+                    unit={"Gbps"}
+                />
             }
         </>
-        
     );
 };
 

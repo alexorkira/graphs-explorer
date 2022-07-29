@@ -1,12 +1,15 @@
 import { StatusCodes } from "http-status-codes";
 import React, { useEffect, useState } from "react";
 import { ChartData } from "../../../interfaces/ChartData";
+import { ChartProps } from "../../../interfaces/ChartProps";
 import { Audience } from "../../../models/Audience";
 import { AudienceService } from "../../../services/audience.service";
 import ContextStore from "../../../store";
 import Chart from "../Chart/Chart";
 
-const ConcurrentViewerChart: React.FC = () => {
+const ConcurrentViewerChart: React.FC<ChartProps> = (
+    { id } : ChartProps
+) => {
     const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
     const invalidateSession = ContextStore.useStoreActions((actions) => actions.setSessionToken);
     const [ data, setData ] = useState<Array<ChartData>>([]);
@@ -17,7 +20,6 @@ const ConcurrentViewerChart: React.FC = () => {
         const fetchData = async () => {
             AudienceService.getAll(sessionToken)
                 .then(({ audience }: Audience) => {
-
                     // Extract the array of timestamp (it is the same if taken from p2p array)
                     // in order to display it into the tooltip header
                     setTimestamps(audience.map(c => c[0]));
@@ -43,7 +45,13 @@ const ConcurrentViewerChart: React.FC = () => {
     return (
         <>
             {data.length > 0 && 
-                <Chart title={"Concurrent Viewer"} data={data} timestamps={timestamps} noFilling />
+                <Chart 
+                    id={id}
+                    title={"Concurrent Viewer"} 
+                    data={data} 
+                    timestamps={timestamps} 
+                    noFilling 
+                />
             }
         </>
         
