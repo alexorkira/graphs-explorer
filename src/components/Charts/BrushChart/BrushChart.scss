@@ -1,0 +1,13 @@
+@import "../../../styles/colors";
+
+.brush {
+    position: relative;
+
+    .chart-container {
+        height: 80px!important
+    }
+    .apexcharts-canvas {
+        position: absolute !important;
+        margin-top: -28px;
+    }
+}

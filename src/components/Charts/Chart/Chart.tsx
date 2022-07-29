@@ -1,18 +1,19 @@
 import moment from "moment";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
+import { TIMESTAMP_FORMAT, X_AXIS_DATETIME_FORMAT } from "../../../constants/datetimeFormats";
 import { ChartData } from "../../../interfaces/ChartData";
+import { createTooltipEntry } from "../../../utils/createTooltipEntry";
 import "./Chart.scss";
-import { createTooltipEntry } from "./createTooltipEntry";
 
-const TIMESTAMP_FORMAT = 'dddd DD-MM-YYYY HH:mm (Z)';
-const X_AXIS_DATETIME_FORMAT = 'MMM DD';
 
 interface ChartProps {
+    id: string;
     title?: string;
     data: Array<ChartData>;
     timestamps: Array<number>,
     noFilling?: boolean;
+    unit?: string;
 };
 
 const Chart: React.FC<ChartProps> = (props: ChartProps) => {
@@ -41,6 +42,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
     const options = {
         colors: colors,
         chart: {
+            id: props.id,
             type: "area" as "area",
             toolbar: {
                 show: false,
@@ -89,13 +91,23 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
                 }
             } 
         },
+        yaxis: {
+            tickAmount: 3,
+            max: (max: number) => Math.floor(max),
+            labels: {
+                formatter: (val: number) => `${Math.floor(val).toFixed(2)}${props.unit ?? ''}`
+            }
+        },
         legend: {
             show: true,
         },
         annotations: {
             yaxis: strokes
         },
-        fill: fill
+        fill: fill,
+        grid: {
+            show: false,
+        }
     };
 
     if (props.noFilling) {
@@ -104,18 +116,12 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
     
     return (
         <div className="chart">
-            <h3 className="chart-title">{props.title}</h3>
+            <div className="chart-title">{props.title}</div>
             <div className="chart-container">
-                <ReactApexChart 
-                    type="area" 
-                    series={series} 
-                    options={options} 
-                    height={250}
-                />
+                <ReactApexChart type="area" series={series} options={options} height={280} />
             </div>
         </div>
-        
     );
 };
 
-export default React.memo(Chart);
+export default Chart;
