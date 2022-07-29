@@ -7,7 +7,7 @@ import { Bandwidth } from "../../../models/Bandwidth";
 import { BandwidthService } from "../../../services/bandwidth.services";
 import ContextStore from "../../../store";
 import { bpsToGbps } from "../../../utils/bpsToGbps";
-import Chart from "../Chart/Chart";
+import ChartWrapper from "../ChartWrapper/ChartWrapper";
 
 const CapacityOffloadChart: React.FC<ChartProps> = (
     { id } : ChartProps
@@ -77,7 +77,7 @@ const CapacityOffloadChart: React.FC<ChartProps> = (
     return (
         <>
             {data.length > 0 && 
-                <Chart 
+                <ChartWrapper 
                     id={id}
                     title={"Capacity offload"} 
                     data={data} 

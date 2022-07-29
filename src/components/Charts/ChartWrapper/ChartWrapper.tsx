@@ -4,8 +4,7 @@ import ReactApexChart from "react-apexcharts";
 import { TIMESTAMP_FORMAT, X_AXIS_DATETIME_FORMAT } from "../../../constants/datetimeFormats";
 import { ChartData } from "../../../interfaces/ChartData";
 import { createTooltipEntry } from "../../../utils/createTooltipEntry";
-import "./Chart.scss";
-
+import "./ChartWrapper.scss";
 
 interface ChartProps {
     id: string;
