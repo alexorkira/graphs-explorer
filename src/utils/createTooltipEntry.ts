@@ -1,15 +1,11 @@
-import { StrokeData } from "../interfaces/ChartData"
+import { TooltipItem } from "../interfaces/TooltipItem"
 
 export const createTooltipEntry = (
-    label: string, 
-    value: string, 
-    color: string,
-    index: number, 
-    unit?: string,
-    stroke?: StrokeData
+    order: number, 
+    { label, value, unit, color, stroke }: TooltipItem,
 ) => {
     return (
-        `<div class="apexcharts-tooltip-series-group apexcharts-active" style="order: ${index}; display: flex;">
+        `<div class="apexcharts-tooltip-series-group apexcharts-active" style="order: ${order}; display: flex;">
             <span class="apexcharts-tooltip-marker" style="background-color: ${color};"></span>
             <div class="apexcharts-tooltip-text" style="font-size: 12px;">
                 <div class="apexcharts-tooltip-y-group">
@@ -19,7 +15,7 @@ export const createTooltipEntry = (
             </div>
         </div>
         ${stroke
-            ? `<div class="apexcharts-tooltip-series-group apexcharts-active" style="order: ${index}; display: flex;">
+            ? `<div class="apexcharts-tooltip-series-group apexcharts-active" style="order: ${order}; display: flex;">
                 <span class="apexcharts-tooltip-marker" style="background-color: ${stroke.color}"></span>
                 <div class="apexcharts-tooltip-text" style="font-size: 12px;">
                     <div class="apexcharts-tooltip-y-group">

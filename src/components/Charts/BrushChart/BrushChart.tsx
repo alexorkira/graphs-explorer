@@ -68,10 +68,23 @@ const BrushChart: React.FC<BrushChartProps> = (
             custom: (opts: { dataPointIndex: number; }) => {
                 // For the first selection, "From" value will be the point where the mouse is over in the graph
                 const from = fromValue ??  timestamps[opts.dataPointIndex];
-                let content = createTooltipEntry("From", moment(from).local().format(TIMESTAMP_FORMAT), "green", 0);
+                let content = createTooltipEntry(
+                    0,
+                    {
+                        label: "From", 
+                        value: moment(from).local().format(TIMESTAMP_FORMAT), 
+                        color:"green", 
+                    },
+                );
                 if (toValue) {
-                    const to = moment(toValue).local().format(TIMESTAMP_FORMAT);
-                    content += createTooltipEntry("To", to, "blue", 1);
+                    content += createTooltipEntry(
+                        1,
+                        {
+                            label: "To", 
+                            value: moment(toValue).local().format(TIMESTAMP_FORMAT), 
+                            color: "blue", 
+                        },
+                    );
                 }
 
                 return (

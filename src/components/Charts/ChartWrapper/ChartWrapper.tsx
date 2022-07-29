@@ -13,6 +13,7 @@ interface ChartProps {
     timestamps: Array<number>,
     noFilling?: boolean;
     unit?: string;
+    tooltipExtraData?: Array<ChartData>
 };
 
 const Chart: React.FC<ChartProps> = (props: ChartProps) => {
@@ -62,15 +63,34 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
                 const { series, dataPointIndex } = options;
                 const timestamp = moment(timestamps[dataPointIndex]).local().format(TIMESTAMP_FORMAT);
                 let content = "";
-                
-                props.data.forEach((d, i) => {
+
+                props.data.forEach((item, index) => {
+                    const {label, color, unit, stroke} = item;
                     content += createTooltipEntry(
-                        d.label,
-                        series[i][dataPointIndex], 
-                        d.color,
-                        i,
-                        d.unit,
-                        d.stroke
+                        index,
+                        { 
+                            label,
+                            value: series[index][dataPointIndex], 
+                            color,
+                            unit,
+                            stroke 
+                        },
+                    );
+                });
+
+                props.tooltipExtraData?.forEach((item, index) => {
+                    const {label, color, unit, values } = item;
+                    content += createTooltipEntry(
+                        index + props.data.length,
+                        { 
+                            label,
+                            // FIXME: Find how to calculate the Spike reduction
+                            value: values[dataPointIndex] 
+                                ? (values[dataPointIndex] as number).toFixed(2) 
+                                : "? ", 
+                            color,
+                            unit
+                        }
                     );
                 });
                 
@@ -103,10 +123,10 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         annotations: {
             yaxis: strokes
         },
-        fill: fill,
         grid: {
             show: false,
-        }
+        },
+        fill: fill,
     };
 
     if (props.noFilling) {
@@ -117,7 +137,12 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         <div className="chart">
             <div className="chart-title">{props.title}</div>
             <div className="chart-container">
-                <ReactApexChart type="area" series={series} options={options} height={280} />
+                <ReactApexChart 
+                    type="area" 
+                    series={series} 
+                    options={options} 
+                    height={280} 
+                />
             </div>
         </div>
     );
