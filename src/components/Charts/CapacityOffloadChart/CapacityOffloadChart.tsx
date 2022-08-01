@@ -44,6 +44,9 @@ const CapacityOffloadChart: React.FC<ChartProps> = (
                     // Sums of p2p and http values
                     const total = p2pValues.map((p,i) => p + httpValues[i])
 
+                    // Spike reduction of p2p and http values
+                    const spikeReductions = httpValues.map((h,i) => (1 - (h / p2pValues[i])) * 100)
+
                     setData([
                        {
                             label: "P2p",
@@ -78,7 +81,7 @@ const CapacityOffloadChart: React.FC<ChartProps> = (
                         },
                         {
                             label: "Spike reduction",
-                            values: [],
+                            values: spikeReductions,
                             unit: "%",
                             color: "#E74C3C"
                         },

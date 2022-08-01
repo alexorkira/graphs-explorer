@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import { BRUSH_CHART_FIXED_OPTIONS } from "../../../constants/brushFixedOptions";
+import { BRUSH_CHART_FIXED_OPTIONS } from "../../../constants/brushChartFixedOptions";
 import { TIMESTAMP_FORMAT } from "../../../constants/datetimeFormats";
 import { BrushChartProps } from "../../../interfaces/ChartProps";
 import { Audience } from "../../../models/Audience";
@@ -43,6 +43,7 @@ const BrushChart: React.FC<BrushChartProps> = (
     }, [invalidateSession, sessionToken]);
 
     const brushOptions = {
+        ...BRUSH_CHART_FIXED_OPTIONS,
         colors: [ "#2E8B57" ],
         chart: {
             zoom: {
@@ -66,7 +67,8 @@ const BrushChart: React.FC<BrushChartProps> = (
         tooltip: {
             enabled: true,
             custom: (opts: { dataPointIndex: number; }) => {
-                // For the first selection, "From" value will be the point where the mouse is over in the graph
+                // For the first selection, "From" value will be the point 
+                // where the mouse is over in the graph
                 const from = fromValue ??  timestamps[opts.dataPointIndex];
                 let content = createTooltipEntry(
                     0,
@@ -94,8 +96,7 @@ const BrushChart: React.FC<BrushChartProps> = (
                     ${content}`
                 );
             }
-        },
-        ...BRUSH_CHART_FIXED_OPTIONS,
+        }
     };
 
     return (
