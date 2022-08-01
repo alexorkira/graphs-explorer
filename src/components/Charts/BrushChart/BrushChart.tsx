@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import { BRUSH_CHART_FIXED_OPTIONS } from "../../../constants/brushFixedOptions";
+import { BRUSH_CHART_FIXED_OPTIONS } from "../../../constants/brushChartFixedOptions";
 import { TIMESTAMP_FORMAT } from "../../../constants/datetimeFormats";
 import { BrushChartProps } from "../../../interfaces/ChartProps";
 import { Audience } from "../../../models/Audience";
@@ -43,6 +43,7 @@ const BrushChart: React.FC<BrushChartProps> = (
     }, [invalidateSession, sessionToken]);
 
     const brushOptions = {
+        ...BRUSH_CHART_FIXED_OPTIONS,
         colors: [ "#2E8B57" ],
         chart: {
             zoom: {
@@ -66,12 +67,26 @@ const BrushChart: React.FC<BrushChartProps> = (
         tooltip: {
             enabled: true,
             custom: (opts: { dataPointIndex: number; }) => {
-                // For the first selection, "From" value will be the point where the mouse is over in the graph
+                // For the first selection, "From" value will be the point 
+                // where the mouse is over in the graph
                 const from = fromValue ??  timestamps[opts.dataPointIndex];
-                let content = createTooltipEntry("From", moment(from).local().format(TIMESTAMP_FORMAT), "green", 0);
+                let content = createTooltipEntry(
+                    0,
+                    {
+                        label: "From", 
+                        value: moment(from).local().format(TIMESTAMP_FORMAT), 
+                        color:"green", 
+                    },
+                );
                 if (toValue) {
-                    const to = moment(toValue).local().format(TIMESTAMP_FORMAT);
-                    content += createTooltipEntry("To", to, "blue", 1);
+                    content += createTooltipEntry(
+                        1,
+                        {
+                            label: "To", 
+                            value: moment(toValue).local().format(TIMESTAMP_FORMAT), 
+                            color: "blue", 
+                        },
+                    );
                 }
 
                 return (
@@ -81,8 +96,7 @@ const BrushChart: React.FC<BrushChartProps> = (
                     ${content}`
                 );
             }
-        },
-        ...BRUSH_CHART_FIXED_OPTIONS,
+        }
     };
 
     return (

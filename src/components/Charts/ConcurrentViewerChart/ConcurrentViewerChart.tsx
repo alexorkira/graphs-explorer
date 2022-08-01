@@ -5,7 +5,7 @@ import { ChartProps } from "../../../interfaces/ChartProps";
 import { Audience } from "../../../models/Audience";
 import { AudienceService } from "../../../services/audience.service";
 import ContextStore from "../../../store";
-import Chart from "../Chart/Chart";
+import ChartWrapper from "../ChartWrapper/ChartWrapper";
 
 const ConcurrentViewerChart: React.FC<ChartProps> = (
     { id } : ChartProps
@@ -45,7 +45,7 @@ const ConcurrentViewerChart: React.FC<ChartProps> = (
     return (
         <>
             {data.length > 0 && 
-                <Chart 
+                <ChartWrapper 
                     id={id}
                     title={"Concurrent Viewer"} 
                     data={data} 

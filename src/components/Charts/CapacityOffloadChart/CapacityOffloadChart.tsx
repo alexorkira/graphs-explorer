@@ -7,7 +7,7 @@ import { Bandwidth } from "../../../models/Bandwidth";
 import { BandwidthService } from "../../../services/bandwidth.services";
 import ContextStore from "../../../store";
 import { bpsToGbps } from "../../../utils/bpsToGbps";
-import Chart from "../Chart/Chart";
+import ChartWrapper from "../ChartWrapper/ChartWrapper";
 
 const CapacityOffloadChart: React.FC<ChartProps> = (
     { id } : ChartProps
@@ -15,6 +15,7 @@ const CapacityOffloadChart: React.FC<ChartProps> = (
     const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
     const invalidateSession = ContextStore.useStoreActions((actions) => actions.setSessionToken);
     const [ data, setData ] = useState<Array<ChartData>>([]);
+    const [ tooltipItems, setTooltipItems ] = useState<Array<ChartData>>([]);
     const [ timestamps, setTimestamps ] = useState<Array<number>>([]);
 
     useEffect(() => {
@@ -32,11 +33,19 @@ const CapacityOffloadChart: React.FC<ChartProps> = (
                     const gbpsP2p: Array<[number,number]> = 
                         p2p.map(([timestamp, value]) => [timestamp, bpsToGbps(value)]
                     );
-                    const p2pMax = Math.max(...gbpsP2p.map(p => p[1]));
+                    const p2pValues = gbpsP2p.map(p => p[1]);
+                    const p2pMax = Math.max(...p2pValues);
                     const gbpsHttp: Array<[number,number]> = 
                         cdn.map(([timestamp, value]) => [timestamp, bpsToGbps(value)]
                     );
-                    const httpMax = Math.max(...gbpsHttp.map(h => h[1]));
+                    const httpValues = gbpsHttp.map(h => h[1]);
+                    const httpMax = Math.max(...httpValues);
+
+                    // Sums of p2p and http values
+                    const total = p2pValues.map((p,i) => p + httpValues[i])
+
+                    // Spike reduction of p2p and http values
+                    const spikeReductions = httpValues.map((h,i) => (1 - (h / p2pValues[i])) * 100)
 
                     setData([
                        {
@@ -60,9 +69,23 @@ const CapacityOffloadChart: React.FC<ChartProps> = (
                                 color: "#0075C9",
                                 value: httpMax
                             }
-                        }
-                        , 
+                        },
                     ]);
+    
+                    setTooltipItems([
+                        {
+                            label: "Total",
+                            values: total,
+                            unit: "Gbps",
+                            color: "#1ec71e"
+                        },
+                        {
+                            label: "Spike reduction",
+                            values: spikeReductions,
+                            unit: "%",
+                            color: "#E74C3C"
+                        },
+                    ])
                 })
                 .catch(e => {
                     if (e.status === StatusCodes.FORBIDDEN) {
@@ -77,12 +100,13 @@ const CapacityOffloadChart: React.FC<ChartProps> = (
     return (
         <>
             {data.length > 0 && 
-                <Chart 
+                <ChartWrapper 
                     id={id}
                     title={"Capacity offload"} 
                     data={data} 
                     timestamps={timestamps}
                     unit={"Gbps"}
+                    tooltipExtraData={tooltipItems}
                 />
             }
         </>

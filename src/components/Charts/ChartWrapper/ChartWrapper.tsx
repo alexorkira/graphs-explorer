@@ -1,11 +1,11 @@
 import moment from "moment";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
+import { CHART_FIXED_OPTIONS } from "../../../constants/chartFixedOptions";
 import { TIMESTAMP_FORMAT, X_AXIS_DATETIME_FORMAT } from "../../../constants/datetimeFormats";
 import { ChartData } from "../../../interfaces/ChartData";
 import { createTooltipEntry } from "../../../utils/createTooltipEntry";
-import "./Chart.scss";
-
+import "./ChartWrapper.scss";
 
 interface ChartProps {
     id: string;
@@ -14,6 +14,7 @@ interface ChartProps {
     timestamps: Array<number>,
     noFilling?: boolean;
     unit?: string;
+    tooltipExtraData?: Array<ChartData>
 };
 
 const Chart: React.FC<ChartProps> = (props: ChartProps) => {
@@ -40,38 +41,38 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
     }
 
     const options = {
-        colors: colors,
-        chart: {
-            id: props.id,
-            type: "area" as "area",
-            toolbar: {
-                show: false,
-            },
-            zoom: {
-                enabled: false
-            }
-        },
-        stroke: {
-            width: 2,
-            curve: 'straight' as "straight",
-        },
-        dataLabels: {
-            enabled: false,
-        },
+        ...CHART_FIXED_OPTIONS , 
+        colors,
+        chart: { id: props.id, ...CHART_FIXED_OPTIONS.chart },
         tooltip: {
             custom: (options: any) => {
                 const { series, dataPointIndex } = options;
                 const timestamp = moment(timestamps[dataPointIndex]).local().format(TIMESTAMP_FORMAT);
                 let content = "";
-                
-                props.data.forEach((d, i) => {
+                props.data.forEach((item, index) => {
+                    const { label, color, unit, stroke } = item;
                     content += createTooltipEntry(
-                        d.label,
-                        series[i][dataPointIndex], 
-                        d.color,
-                        i,
-                        d.unit,
-                        d.stroke
+                        index,
+                        { 
+                            label,
+                            value: series[index][dataPointIndex], 
+                            color,
+                            unit,
+                            stroke 
+                        },
+                    );
+                });
+
+                props.tooltipExtraData?.forEach((extraData, index) => {
+                    const { label, color, unit, values } = extraData;
+                    content += createTooltipEntry(
+                        index + props.data.length,
+                        { 
+                            label,
+                            value: (values[dataPointIndex] as number).toFixed(2),
+                            color,
+                            unit
+                        }
                     );
                 });
                 
@@ -84,7 +85,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
             }
         },
         xaxis: {
-            tickAmount: 2,
+            ...CHART_FIXED_OPTIONS.xaxis,
             labels: {
                 formatter: (dt: any) => {
                     return moment(dt).local().format(X_AXIS_DATETIME_FORMAT);
@@ -92,33 +93,27 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
             } 
         },
         yaxis: {
-            tickAmount: 3,
-            max: (max: number) => Math.floor(max),
+            ...CHART_FIXED_OPTIONS.yaxis,
             labels: {
                 formatter: (val: number) => `${Math.floor(val).toFixed(2)}${props.unit ?? ''}`
             }
         },
-        legend: {
-            show: true,
-        },
         annotations: {
             yaxis: strokes
         },
-        fill: fill,
-        grid: {
-            show: false,
-        }
+        fill,
     };
 
-    if (props.noFilling) {
-        Object.assign(options, { fill: { type: 'solid', colors: ['transparent'] }});
-    }
-    
     return (
         <div className="chart">
             <div className="chart-title">{props.title}</div>
             <div className="chart-container">
-                <ReactApexChart type="area" series={series} options={options} height={280} />
+                <ReactApexChart 
+                    type="area" 
+                    series={series} 
+                    options={options} 
+                    height={280} 
+                />
             </div>
         </div>
     );
