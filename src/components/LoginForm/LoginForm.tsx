@@ -10,7 +10,7 @@ const LoginForm: React.FC = () => {
     const [ usernameError, setUsernameError ] = useState<string>('');
     const [ password, setPassword ] = useState<string>('');
     const [ passwordError, setPasswordError ] = useState<string>('');
-    const dispatchLogin = ContextStore.useStoreActions((actions) => actions.login);
+    const dispatchLogin = ContextStore.useStoreActions((actions) => actions.session.login);
     
     const login = async () => {
         setUsernameError(username === '' ? "Please insert the username" : '');

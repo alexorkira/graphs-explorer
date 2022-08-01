@@ -1,12 +1,9 @@
-import { StatusCodes } from "http-status-codes";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ReactApexChart from "react-apexcharts";
 import { BRUSH_CHART_FIXED_OPTIONS } from "../../../constants/brushChartFixedOptions";
 import { TIMESTAMP_FORMAT } from "../../../constants/datetimeFormats";
 import { BrushChartProps } from "../../../interfaces/ChartProps";
-import { Audience } from "../../../models/Audience";
-import { AudienceService } from "../../../services/audience.service";
 import ContextStore from "../../../store";
 import { createTooltipEntry } from "../../../utils/createTooltipEntry";
 import "./BrushChart.scss";
@@ -14,34 +11,16 @@ import "./BrushChart.scss";
 const BrushChart: React.FC<BrushChartProps> = (
     { ids }: BrushChartProps
 ) => {
-    const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
-    const invalidateSession = ContextStore.useStoreActions((actions) => actions.setSessionToken);
-    const [ data, setData ] = useState<Array<[number,number]>>([]);
-    const [ timestamps, setTimestamps ] = useState<Array<number>>([]);
+    const timestamps  = ContextStore.useStoreState((store) => store.chartData.timestamps);
+    const audianceChartData  = ContextStore.useStoreState((store) => store.chartData.audienceChartData);
     
+    if (!(audianceChartData && timestamps.length > 0)) {
+        return <></>;
+    }
+
     let fromValue = 0;
     let toValue = 0;
-
-    useEffect(() => {
-        //FIXME: It's possibile to avoid this call taken the state from the store
-        const fetchData = async () => {
-            AudienceService.getAll(sessionToken)
-                .then(({ audience }: Audience) => {
-                    // Extract the array of timestamp (it is the same if taken from p2p array)
-                    // in order to display it into the tooltip header
-                    setTimestamps(audience.map(c => c[0]));
-                    setData(audience);
-                })
-                .catch(e => {
-                    if (e.status === StatusCodes.FORBIDDEN) {
-                        invalidateSession(undefined);
-                    }
-                });
-        }
-        
-        fetchData();  
-    }, [invalidateSession, sessionToken]);
-
+    
     const brushOptions = {
         ...BRUSH_CHART_FIXED_OPTIONS,
         colors: [ "#2E8B57" ],
@@ -100,20 +79,16 @@ const BrushChart: React.FC<BrushChartProps> = (
     };
 
     return (
-        <>
-            {data.length > 0 && 
-                <div className="chart brush">
-                    <div className="chart-container">
-                        <ReactApexChart 
-                            options={brushOptions}
-                            series={[{ data: data }]} 
-                            type="area" 
-                            height={120} 
-                        />
-                    </div>
-                </div>
-            }
-        </>
+        <div className="chart brush">
+            <div className="chart-container">
+                <ReactApexChart 
+                    options={brushOptions}
+                    series={[{ data: audianceChartData.values }]} 
+                    type="area" 
+                    height={120} 
+                />
+            </div>
+        </div>
     );
 };
 

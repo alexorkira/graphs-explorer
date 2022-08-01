@@ -4,8 +4,8 @@ import "./Header.scss";
 
 const Header: React.FC = () => {
     const [showMenu, setShowMenu ] = useState<boolean>(false);
-    const logout = ContextStore.useStoreActions((actions) => actions.logout);
-    const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
+    const logout = ContextStore.useStoreActions((actions) => actions.session.logout);
+    const sessionToken = ContextStore.useStoreState((store) => store.session.token);
     
     return (
         <header className="header chi-header -portal">
