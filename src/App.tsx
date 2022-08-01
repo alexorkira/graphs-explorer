@@ -5,7 +5,7 @@ import LoginPage from './pages/Login/LoginPage';
 import ContextStore from './store';
 
 const App = () => {
-    const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
+    const sessionToken = ContextStore.useStoreState((store) => store.session);
   
     return (
         <div className="App">

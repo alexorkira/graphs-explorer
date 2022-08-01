@@ -1,54 +1,26 @@
-import { StatusCodes } from "http-status-codes";
-import React, { useEffect, useState } from "react";
-import { ChartData } from "../../../interfaces/ChartData";
+import React, { useEffect } from "react";
 import { ChartProps } from "../../../interfaces/ChartProps";
-import { Audience } from "../../../models/Audience";
-import { AudienceService } from "../../../services/audience.service";
 import ContextStore from "../../../store";
 import ChartWrapper from "../ChartWrapper/ChartWrapper";
 
 const ConcurrentViewerChart: React.FC<ChartProps> = (
     { id } : ChartProps
 ) => {
-    const sessionToken = ContextStore.useStoreState((store) => store.sessionToken);
-    const invalidateSession = ContextStore.useStoreActions((actions) => actions.setSessionToken);
-    const [ data, setData ] = useState<Array<ChartData>>([]);
-    const [ timestamps, setTimestamps ] = useState<Array<number>>([]);
+    const  timestamps = ContextStore.useStoreState((store) => store.chartData.timestamps);
+    const  audienceChartData = ContextStore.useStoreState((store) => store.chartData.audienceChartData);
+    const  fetchChartData = ContextStore.useStoreActions((actions) => actions.chartData.fetchAudience);
    
-
     useEffect(() => {
-        const fetchData = async () => {
-            AudienceService.getAll(sessionToken)
-                .then(({ audience }: Audience) => {
-                    // Extract the array of timestamp (it is the same if taken from p2p array)
-                    // in order to display it into the tooltip header
-                    setTimestamps(audience.map(c => c[0]));
-                    setData([
-                       {
-                            label: "Audiance",
-                            values: audience,
-                            color: "#FF7D71",
-                        }
-                        , 
-                    ]);
-                })
-                .catch(e => {
-                    if (e.status === StatusCodes.FORBIDDEN) {
-                        invalidateSession(undefined);
-                    }
-                });
-        }
-        
-        fetchData();  
-    }, [invalidateSession, sessionToken]);
+        fetchChartData();  
+    }, [fetchChartData]);
 
     return (
         <>
-            {data.length > 0 && 
+            {audienceChartData && timestamps.length > 0 &&
                 <ChartWrapper 
                     id={id}
                     title={"Concurrent Viewer"} 
-                    data={data} 
+                    data={[ audienceChartData ]} 
                     timestamps={timestamps} 
                     noFilling 
                 />
