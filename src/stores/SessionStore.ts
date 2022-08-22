@@ -4,21 +4,22 @@ import { User } from '../models/User';
 import { AuthService } from '../services/auth.services';
 
 export interface SessionStoreModel {
-    token: string | undefined,
-    setToken: Action<SessionStoreModel, string | undefined>,
+    token: string | null,
+    setToken: Action<SessionStoreModel, string | null>,
     login: Thunk<SessionStoreModel, User>,
-    logout: Thunk<SessionStoreModel, string>,
+    logout: Thunk<SessionStoreModel, string | null>,
 }
 
 export const sessionStoreInit: SessionStoreModel = {
-    token: localStorage.getItem("session_token") ?? undefined,
+    token: String(process.env.REACT_APP_STANDALONE_MODE) === 'on'
+        ? 'standalone-mode'
+        : localStorage.getItem('session_token'),
     setToken: action((state, token) => {
         state.token = token;
         if (token) {
-            localStorage.setItem("session_token", token);
-        }
-        else {  
-            localStorage.removeItem("session_token");
+            localStorage.setItem('session_token', token);
+        } else {
+            localStorage.removeItem('session_token');
         }
     }),
     login: thunk(async (actions, user) =>
@@ -27,11 +28,11 @@ export const sessionStoreInit: SessionStoreModel = {
                 actions.setToken(res.session_token);
             })
             .catch(e => {
-                console.error("error", e);
+                console.error('error', e);
             })
     ),
     logout: thunk(async (actions, token) => {
-        AuthService.logout(token);
-        actions.setToken(undefined);
+        AuthService.logout(token)
+            .finally(() => actions.setToken(null));
     })
 };
