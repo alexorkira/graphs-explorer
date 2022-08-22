@@ -1,13 +1,13 @@
 export const BRUSH_CHART_FIXED_OPTIONS = {
     stroke: {
         width: 0,
-        curve: 'straight' as "straight",
+        curve: 'straight' as const,
     },
     legend: {
         show: false,
     },
     xaxis: {
-        type: 'datetime' as 'datetime',
+        type: 'datetime' as const,
         labels: {
             show: false
         },

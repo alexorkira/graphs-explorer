@@ -14,14 +14,14 @@ export class CommonService {
     }
 
     static async getData<T>(
-        api: string, 
+        api: string,
         from: number,
-        to: number, 
+        to: number,
         sessionToken: string
     ): Promise<T> {
         return CommonService.post<T>(
-            api, 
-            { 
+            api,
+            {
                 session_token: sessionToken,
                 from,
                 to

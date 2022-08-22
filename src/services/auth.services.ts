@@ -17,11 +17,11 @@ export class AuthService extends CommonService {
         }
     }
 
-    static async logout(sessionToken: string): Promise<void> {
+    static async logout(sessionToken: string | null): Promise<void> {
         try {
             await AuthService.post<void>(
-                `${AuthService.baseUrl}/logout`, 
-                { session_token: sessionToken}
+                `${AuthService.baseUrl}/logout`,
+                { session_token: sessionToken }
             );
         } catch (e: unknown) {
             if (axios.isAxiosError(e)) {

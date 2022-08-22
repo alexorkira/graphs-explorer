@@ -1,7 +1,7 @@
-import { TooltipItem } from "../interfaces/TooltipItem"
+import { TooltipItem } from '../interfaces/TooltipItem';
 
 export const createTooltipEntry = (
-    order: number, 
+    order: number,
     { label, value, unit, color, stroke }: TooltipItem,
 ) => {
     return (
@@ -23,8 +23,8 @@ export const createTooltipEntry = (
                         <span class="apexcharts-tooltip-text-y-value" style="color: ${stroke.color};">${stroke.value}${unit ?? ''}</span>
                     </div>
                 </div>
-            </div>` 
+            </div>`
             : ''
         }`
-    )
-}
+    );
+};

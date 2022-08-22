@@ -5,22 +5,26 @@ import LoginPage from './pages/Login/LoginPage';
 import ContextStore from './store';
 
 const App = () => {
-    const sessionToken = ContextStore.useStoreState((store) => store.session.token);
+    let sessionToken = ContextStore.useStoreState((store) => store.session.token);
+    if (String(process.env.REACT_APP_STANDALONE_MODE) === 'on') {
+        sessionToken = 'standalone-mode';
+    }
+
     return (
         <div className="App">
-          {sessionToken 
-              ? <DashboadPage />
-              : <LoginPage />
-          }
-          <Router basename='/'>
-              <Switch>
-                  <Route path="/">
-                      <Redirect to={`${sessionToken ? '/graphs' : '/login'}`} />
-                  </Route>
-              </Switch>
-          </Router>
+            {sessionToken
+                ? <DashboadPage />
+                : <LoginPage />
+            }
+            <Router basename='/'>
+                <Switch>
+                    <Route path="/">
+                        <Redirect to={`${sessionToken ? '/graphs' : '/login'}`} />
+                    </Route>
+                </Switch>
+            </Router>
         </div>
     );
-}
+};
 
 export default App;

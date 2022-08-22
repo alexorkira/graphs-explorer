@@ -6,4 +6,4 @@
  */
 export const bpsToGbps = (bps: number): number => {
     return Number((bps/1000000000).toFixed(2));
-}
+};

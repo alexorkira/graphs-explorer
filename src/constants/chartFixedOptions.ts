@@ -1,8 +1,7 @@
 
 export const CHART_FIXED_OPTIONS = {
     chart: {
-        //id:
-        type: "area" as "area",
+        type: 'area' as const,
         toolbar: {
             show: false,
         },
@@ -12,7 +11,7 @@ export const CHART_FIXED_OPTIONS = {
     },
     stroke: {
         width: 2,
-        curve: 'straight' as "straight",
+        curve: 'straight' as const,
     },
     dataLabels: {
         enabled: false,

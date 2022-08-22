@@ -1,11 +1,11 @@
-import moment from "moment";
-import React from "react";
-import ReactApexChart from "react-apexcharts";
-import { CHART_FIXED_OPTIONS } from "../../../constants/chartFixedOptions";
-import { TIMESTAMP_FORMAT, X_AXIS_DATETIME_FORMAT } from "../../../constants/datetimeFormats";
-import { ChartData } from "../../../interfaces/ChartData";
-import { createTooltipEntry } from "../../../utils/createTooltipEntry";
-import "./ChartWrapper.scss";
+import moment from 'moment';
+import React from 'react';
+import ReactApexChart from 'react-apexcharts';
+import { CHART_FIXED_OPTIONS } from '../../../constants/chartFixedOptions';
+import { TIMESTAMP_FORMAT, X_AXIS_DATETIME_FORMAT } from '../../../constants/datetimeFormats';
+import { ChartData } from '../../../interfaces/ChartData';
+import { createTooltipEntry } from '../../../utils/createTooltipEntry';
+import './ChartWrapper.scss';
 
 interface ChartProps {
     id: string;
@@ -15,11 +15,11 @@ interface ChartProps {
     noFilling?: boolean;
     unit?: string;
     tooltipExtraData?: Array<ChartData>
-};
+}
 
 const Chart: React.FC<ChartProps> = (props: ChartProps) => {
     const series: ApexAxisChartSeries = [];
-    const strokes: Array<YAxisAnnotations> = []; 
+    const strokes: Array<YAxisAnnotations> = [];
     const colors: Array<string> = [];
     const { timestamps } = props;
 
@@ -27,38 +27,38 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         series.push({ name: d.label, data: d.values });
         colors.push(d.color);
         if (d.stroke) {
-            strokes.push({ 
-                y: d.stroke.value, 
-                borderColor: d.stroke.color, 
-                strokeDashArray: 3 
+            strokes.push({
+                y: d.stroke.value,
+                borderColor: d.stroke.color,
+                strokeDashArray: 3
             });
         }
     });
 
     const fill = { type: 'solid' };
     if (props.noFilling) {
-        Object.assign(fill, {  colors: ['transparent'] });
+        Object.assign(fill, { colors: ['transparent'] });
     }
 
     const options = {
-        ...CHART_FIXED_OPTIONS , 
+        ...CHART_FIXED_OPTIONS,
         colors,
         chart: { id: props.id, ...CHART_FIXED_OPTIONS.chart },
         tooltip: {
-            custom: (options: any) => {
+            custom: (options: { series: [], dataPointIndex: number; }) => {
                 const { series, dataPointIndex } = options;
                 const timestamp = moment(timestamps[dataPointIndex]).local().format(TIMESTAMP_FORMAT);
-                let content = "";
+                let content = '';
                 props.data.forEach((item, index) => {
                     const { label, color, unit, stroke } = item;
                     content += createTooltipEntry(
                         index,
-                        { 
+                        {
                             label,
-                            value: series[index][dataPointIndex], 
+                            value: series[index][dataPointIndex],
                             color,
                             unit,
-                            stroke 
+                            stroke
                         },
                     );
                 });
@@ -67,7 +67,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
                     const { label, color, unit, values } = extraData;
                     content += createTooltipEntry(
                         index + props.data.length,
-                        { 
+                        {
                             label,
                             value: (values[dataPointIndex] as number).toFixed(2),
                             color,
@@ -75,7 +75,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
                         }
                     );
                 });
-                
+
                 return (
                     `<div class="apexcharts-tooltip-title" style="font-weight: bold; font-size: 14px;">
                         ${timestamp}
@@ -90,7 +90,7 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
                 formatter: (dt: any) => {
                     return moment(dt).local().format(X_AXIS_DATETIME_FORMAT);
                 }
-            } 
+            }
         },
         yaxis: {
             ...CHART_FIXED_OPTIONS.yaxis,
@@ -108,11 +108,11 @@ const Chart: React.FC<ChartProps> = (props: ChartProps) => {
         <div className="chart">
             <div className="chart-title">{props.title}</div>
             <div className="chart-container">
-                <ReactApexChart 
-                    type="area" 
-                    series={series} 
-                    options={options} 
-                    height={280} 
+                <ReactApexChart
+                    type="area"
+                    series={series}
+                    options={options}
+                    height={280}
                 />
             </div>
         </div>

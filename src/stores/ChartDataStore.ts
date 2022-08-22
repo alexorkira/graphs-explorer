@@ -16,7 +16,7 @@ export interface ChartDataModel {
 export const chartDataInit: ChartDataModel = {
     timestamps: [],
     setTimestamps: action((state, timestamps) => {
-      state.timestamps = timestamps;
+        state.timestamps = timestamps;
     }),
     audienceChartData: null,
     setAudienceChartData: action((state, chartData) => {
@@ -29,15 +29,15 @@ export const chartDataInit: ChartDataModel = {
                 actions.setTimestamps(audience.map(c => c[0]));
                 actions.setAudienceChartData(
                     {
-                        label: "Audiance",
+                        label: 'Audiance',
                         values: audience,
-                        color: "#FF7D71",
+                        color: '#FF7D71',
                     }
                 );
             })
             .catch(e => {
                 if (e.status === StatusCodes.FORBIDDEN) {
-                    helpers.getStoreActions().session.setToken(undefined);
+                    helpers.getStoreActions().session.setToken(null);
                 }
             });
     }),
